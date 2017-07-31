@@ -8,8 +8,9 @@
 
 """
 
-import requests
 import os
+
+import requests
 
 
 def getImage(imgUrl):
@@ -26,8 +27,21 @@ def getImage(imgUrl):
     return imgName
 
 
+def downloadPDF(pdfUrl):
+    r = requests.get(pdfUrl, stream=True)
+    extension = os.path.splitext(pdfUrl)[1]
+    pdfName = ''.join(["./pdf", extension])
+    with open(pdfName, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
+                f.flush()
+        f.close()
+
+    return pdfName
+
 def showImage():
-    image = getImage("http://www.chinabidding.com.cn/zbw/login/image.jsp")
+    image = getImage("https://moscow.sci-hub.cc/captcha/securimage_show.php")
     from PIL import Image
     import matplotlib.pyplot as plt
     img = Image.open(image)
@@ -38,3 +52,4 @@ def showImage():
 
 if __name__ == "__main__":
     showImage()
+    # downloadPDF("https://moscow.sci-hub.cc/e29656cac20acd1376914f504136ad2f/ji2012.pdf")
